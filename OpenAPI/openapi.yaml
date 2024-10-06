@@ -1,0 +1,504 @@
+openapi: 3.0.0
+info:
+  title: Training System API
+  version: 1.0.0
+servers:
+  - url: https://api.trainsystem.com/v1
+
+paths:
+  /trainers:
+    get:
+      summary: Get a list of trainers
+      tags:
+        - trainer
+      operationId: getAllTrainers
+      responses: 
+        "200":
+          description: A list of trainers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/trainers"
+              example:
+                - id: 1
+                  title: "Trainer1"
+                  description: "First trainer data"
+                - id: 2
+                  title: "Trainer2"
+                  description: "Second trainer data" 
+    post:
+      description: "Create a trainer"
+      tags:
+        - trainer
+      operationId: createTrainer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/createTrainer"
+            example:
+              - title: "OpenAPI Best Practices"
+                description: "Discussion about best practices when using OpenAPI"
+      responses:
+        "201":
+          $ref: "#/components/responses/singleTrainer"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "422":
+          $ref: "#/components/responses/unprocessableEntity"
+
+  /trainers/{trainerId}:
+    parameters:
+      - $ref: '#/components/parameters/trainerId'
+    get:
+      summary: Get a trainer by ID
+      tags:
+        - trainer
+      operationId: getTrainer
+      responses:
+        "200":
+          $ref: "#/components/responses/singleTrainer"
+        "404":
+          $ref: "#/components/responses/notFound"
+    put:
+      summary: Update a trainer by ID
+      tags:
+        - trainer
+      operationId: updateTrainer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateTrainer"
+            example:
+              - description: "Discussion about best practices when using OpenAPI"
+      responses:
+        "200":
+          $ref: "#/components/responses/singleTrainer"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "404":
+          $ref: "#/components/responses/notFound"
+        "422":
+          $ref: "#/components/responses/unprocessableEntity"
+    delete:
+      summary: Delete a trainer by ID
+      tags:
+        - trainer
+      operationId: deleteTrainer
+      responses:
+        "404":
+          $ref: "#/components/responses/notFound"
+        "204":
+          description: Trainer deleted
+  /trainers/{trainerId}/workouts:
+    parameters:
+      - $ref: '#/components/parameters/trainerId'
+    get:
+      summary: Get workouts for a trainer
+      tags:
+        - workout
+      operationId: getWorkouts
+      responses:
+        "200":
+          description: List of workouts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/workout"
+              example:
+                - id: 1
+                  title: "Workout1"
+                  description: "First workout data"
+                - id: 2
+                  title: "Workout2"
+                  description: "Second workout data"
+    post:
+      description: 'Add a workout'
+      tags:
+        - workout
+      operationId: createWorkout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addWorkout"
+            example:
+              - title: "OpenAPI Best Practices"
+                description: "Discussion about best practices when using OpenAPI"
+      responses:
+        "201":
+          $ref: "#/components/responses/singleWorkout"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "422":
+          $ref: "#/components/responses/unprocessableEntity"
+  /trainers/{trainerId}/workouts/{workoutId}:
+    parameters:
+      - $ref: '#/components/parameters/trainerId'
+      - $ref: '#/components/parameters/workoutId'
+    get:
+      summary: Get a workout by ID and trainerId
+      tags:
+        - workout
+      operationId: getWorkout
+      responses:
+        "200":
+          $ref: "#/components/responses/singleWorkout"
+        "404":
+          $ref: "#/components/responses/notFound"
+    put:
+      summary: Update a workout by ID for a trainer
+      tags:
+        - workout
+      operationId: updateWorkout
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateWorkout"
+            example:
+              - description: "Discussion about best practices when using OpenAPI"
+      responses:
+        "200":
+          $ref: "#/components/responses/singleWorkout"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "404":
+          $ref: "#/components/responses/notFound"
+        "422":
+          $ref: "#/components/responses/unprocessableEntity"
+    delete:
+      summary: Delete a workout for a trainer
+      tags:
+        - workout
+      operationId: deleteWorkout
+      responses:
+        "404":
+          $ref: "#/components/responses/notFound"
+        "204":
+          description: Workout deleted
+  /trainers/{trainerId}/workouts/{workoutId}/comments:
+    parameters:
+      - $ref: '#/components/parameters/trainerId'
+      - $ref: '#/components/parameters/workoutId'
+    get:
+      summary: Get comments for a specific workout
+      tags:
+        - comment
+      operationId: getComments
+      responses:
+        "200":
+          description: A list of comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/comment"
+              example:
+                - id: 1
+                  title: "Comment1"
+                  description: "Comment on specific workout1"
+                - id: 2
+                  title: "Comment2"
+                  description: "Comment on specific workout2"
+    post:
+      description: "Add a comment for a specific workout"
+      tags:
+        - comment
+      operationId: createComment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addComment"
+            example:
+              - title: "OpenAPI Best Practices"
+                description: "Discussion about best practices when using OpenAPI"
+      responses:
+        "201":
+          $ref: "#/components/responses/singleComment"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "422":
+          $ref: "#/components/responses/unprocessableEntity"
+  /trainers/{id}/workouts/{workoutId}/comments/{commentId}:
+    parameters:
+      - $ref: '#/components/parameters/trainerId'
+      - $ref: '#/components/parameters/workoutId'
+      - $ref: '#/components/parameters/commentId'
+    get:
+      summary: Get a specific comment
+      tags:
+        - comment
+      operationId: getComment
+      responses:
+        "200":
+          $ref: "#/components/responses/singleComment"
+        "404":
+          $ref: "#/components/responses/notFound"
+    put:
+      summary: Update a comment
+      tags:
+        - comment
+      operationId: updateComment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/updateComment"
+            example:
+              - description: "Discussion about best practices when using OpenAPI"
+      responses:
+        "200":
+          $ref: "#/components/responses/singleComment"
+        "400":
+          $ref: "#/components/responses/badRequest"
+        "404":
+          $ref: "#/components/responses/notFound"
+        "422":
+          $ref: "#/components/responses/unprocessableEntity"
+    delete:
+      summary: Delete a comment
+      tags:
+        - comment
+      operationId: deleteComment
+      responses:
+        "404":
+          $ref: "#/components/responses/notFound"
+        "204":
+          description: Comment deleted
+
+components:
+  schemas:
+    trainers:    
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "John Doe"
+        experience:
+          type: integer
+          example: 2
+        typetr:
+          type: string
+          example: "Crossfit, Yoga"
+    createTrainer:
+      type: object
+      required:
+        - name
+        - experience
+        - typetr 
+      properties:
+        name:
+          minLength: 3
+          maxLength: 100
+          pattern: "^[a-zA-Z0-9_]+$" #Only allows letters, numbers and underscores
+          type: string
+          description: "Trainer name"
+        experience:
+          minimum: 1
+          maximum: 70
+          pattern: "^[0-9]+$" #Only allows numbers 
+          type: string
+          description: "Years of experience (numbers only)"
+        typetr:
+          minLength: 3
+          maxLength: 100
+          pattern: "^[a-zA-Z0-9_]+$" #Only allows letters, numbers and underscores
+          type: string
+          description: "Type of workout the trainer can give"
+    updateTrainer:
+      type: object
+      properties:
+        description:
+          type: string
+    workout:
+      type: object
+      properties:
+        id:
+          type: integer
+        typetr:
+          type: string
+        place:
+          type: string
+        price:
+          type: integer
+    addWorkout:
+      type: object
+      required:
+        - typetr
+        - place
+        - price 
+      properties:
+        typetr:
+          minLength: 3
+          maxLength: 100
+          pattern: "^[a-zA-Z0-9_]+$" #Only allows letters, numbers and underscores
+          type: string
+          description: "Training type"
+        place:
+          minLength: 3
+          maxLength: 100
+          pattern: "^[a-zA-Z0-9_]+$" #Only allows letters, numbers and underscores
+          type: string
+          description: "Place where workout is going to be"
+        price:
+          minimum: 1
+          maximum: 70
+          pattern: "^[0-9]+$" #Only allows numbers 
+          type: integer
+          description: "Price for workout (numbers only)"
+    updateWorkout:
+      type: object
+      properties:
+        description:
+          type: string
+    comment:
+      type: object
+      properties:
+        id:
+          type: integer
+        text:
+          type: string
+    addComment:
+      type: object
+      required:
+        - text 
+      properties:
+        text:
+          minLength: 3
+          maxLength: 100
+          pattern: "^[a-zA-Z0-9_]+$" #Only allows letters, numbers and underscores
+          type: string
+          description: "Comment text"
+    updateComment:
+      type: object
+      properties:
+        description:
+          type: string
+    problemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference that identifies the problem type.
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type.
+        status:
+          type: integer
+          format: int32
+          description: The HTTP status code applicable to this problem.
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem.
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem.
+        errors:
+          type: object
+          description: A map of detailed errors for every property ([property => error])
+  responses:
+    singleTrainer:
+      description: A trainer
+      content:
+        application/json:
+          schema:
+            type: object
+            items:
+              $ref: "#/components/schemas/trainers"
+          example:
+            - id: 1
+              title: "OpenAPI Best Practices"
+              description: "Discussion about best practices when using OpenAPI"
+    unprocessableEntity:
+      description: Unprocessable entity response
+      content:
+        application/problem+json:
+          schema:
+            type: object
+            items:
+              $ref: "#/components/schemas/problemDetails"
+          example:
+            type: "https://tools.ietf.org/html/rfc4918#section-11.2"
+            title: "Unprocessable Entity"
+            status: 422
+            errors:
+              Name:
+                - "'Name' must not be empty."
+    badRequest:
+      description: Bad request response
+    notFound:
+      description: Resource was not found
+    singleWorkout:
+      description: A workout
+      content:
+        application/json:
+          schema:
+            type: object
+            items:
+              $ref: "#/components/schemas/workout"
+          example:
+            - id: 1
+              title: "Workout"
+              description: "Data of workout"
+    singleComment:
+      description: A comment
+      content:
+        application/json:
+          schema:
+            type: object
+            items:
+              $ref: "#/components/schemas/comment"
+          example:
+            - id: 1
+              title: "OpenAPI Best Practices"
+              description: "Discussion about best practices when using OpenAPI"
+  parameters:
+    trainerId:
+      name: trainerId
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: The unique identifier of the topic
+    workoutId:
+      name: workoutId
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: The unique identifier of the post
+    commentId:
+      name: commentId
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+      description: The unique identifier of the comment
+  
+tags:
+  - name: trainer
+    description: Operations related to trainers
+  - name: workout
+    description: Operations related to workouts
+  - name: comment
+    description: Operations related to comment
+
+        
+          
+

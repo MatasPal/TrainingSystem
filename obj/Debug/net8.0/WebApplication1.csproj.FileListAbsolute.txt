@@ -1,0 +1,82 @@
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\appsettings.Development.json
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\appsettings.json
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\WebApplication1.exe
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\WebApplication1.deps.json
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\WebApplication1.runtimeconfig.json
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\WebApplication1.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\WebApplication1.pdb
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\FluentValidation.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\Humanizer.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\Npgsql.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\O9d.AspNet.FluentValidation.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\bin\Debug\net8.0\System.CodeDom.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.csproj.AssemblyReference.cache
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.GeneratedMSBuildEditorConfig.editorconfig
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.AssemblyInfoInputs.cache
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.AssemblyInfo.cs
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.csproj.CoreCompileInputs.cache
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.MvcApplicationPartsAssemblyInfo.cache
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets.build.json
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets.development.json
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets\msbuild.WebApplication1.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets\msbuild.build.WebApplication1.props
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.WebApplication1.props
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.WebApplication1.props
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets.pack.json
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\scopedcss\bundle\WebApplication1.styles.css
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\WebAppli.7D14BD69.Up2Date
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\refint\WebApplication1.dll
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.pdb
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.genruntimeconfig.cache
+C:\Studijos\4 kursas\Pirmas pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys\WebApplication1\WebApplication1\obj\Debug\net8.0\ref\WebApplication1.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.csproj.AssemblyReference.cache
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.GeneratedMSBuildEditorConfig.editorconfig
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.AssemblyInfoInputs.cache
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.AssemblyInfo.cs
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.csproj.CoreCompileInputs.cache
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.MvcApplicationPartsAssemblyInfo.cache
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\refint\WebApplication1.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.pdb
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\appsettings.Development.json
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\appsettings.json
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\WebApplication1.exe
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\WebApplication1.deps.json
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\WebApplication1.runtimeconfig.json
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\WebApplication1.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\WebApplication1.pdb
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\FluentValidation.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\Humanizer.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\Npgsql.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\O9d.AspNet.FluentValidation.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\System.CodeDom.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets.build.json
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets.development.json
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets\msbuild.WebApplication1.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets\msbuild.build.WebApplication1.props
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.WebApplication1.props
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.WebApplication1.props
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\staticwebassets.pack.json
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\scopedcss\bundle\WebApplication1.styles.css
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\WebAppli.7D14BD69.Up2Date
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\WebApplication1.genruntimeconfig.cache
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\obj\Debug\net8.0\ref\WebApplication1.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\SharpGrip.FluentValidation.AutoValidation.Endpoints.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\REST pavyzdys 2023\WebApplication1\WebApplication1\bin\Debug\net8.0\SharpGrip.FluentValidation.AutoValidation.Shared.dll

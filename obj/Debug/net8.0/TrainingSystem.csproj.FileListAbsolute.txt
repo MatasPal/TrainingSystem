@@ -82,3 +82,4 @@ C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas
 C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\ManoLab\TrainingSystem\TrainingSystem\obj\Debug\net8.0\TrainingSystem.pdb
 C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\ManoLab\TrainingSystem\TrainingSystem\obj\Debug\net8.0\TrainingSystem.genruntimeconfig.cache
 C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\ManoLab\TrainingSystem\TrainingSystem\obj\Debug\net8.0\ref\TrainingSystem.dll
+C:\Studijos\4_kursas\Pirmas_pusmetis\Saityno taikomųjų programų projektavimas\ManoLab\TrainingSystem\TrainingSystem\obj\Debug\net8.0\TrainingSystem.sourcelink.json

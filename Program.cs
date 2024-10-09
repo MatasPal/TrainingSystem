@@ -114,7 +114,7 @@ public record UpdateCommentDto(string Text)
     {
         public UpdateCommentDtoValidator()
         {
-            RuleFor(dto => dto.Text).NotEmpty().NotNull().Length(2, 100);
+            RuleFor(dto => dto.Text).NotEmpty().NotNull().Length(min: 2, max: 100);
         }
     }
 }

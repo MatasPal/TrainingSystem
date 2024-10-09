@@ -1,6 +1,35 @@
-# Training-system
-Training system project for KTU.
+# Training System
 
-This system will allow coaches to create workouts and keep track of the required inventory. Athletes can easily register for training sessions, pay for them and receive reminders (incoming notifications) about the sessions they have registered for. Trainers can conduct training sessions not only in sports clubs, but also outdoors, in parks, playgrounds, stadiums... With the help of registration, they can accurately predict the amount of equipment needed for a given training session based on the number of registered athletes. Athletes can register, make payments, see advice on clothing and the exact location of the training session. After the training session, the athlete can leave feedback about the coach and the training session
+## Overview
+The **Training System** is a C# .NET-based application designed to streamline the management of training sessions, athlete registration, and workout equipment inventory. It is built using RESTful principles, exposing a **REST API** for managing core functionalities. Future versions of the system will introduce additional features such as graphical user interfaces, enhanced notification services, and more.
 
-The main objective of the system is to facilitate the process of recording and tracking workouts.
+This project is containerized with **Docker** for easier deployment and uses **PostgreSQL** as the primary database.
+
+## Features
+- **REST API**: Current functionality allows for managing users, sessions, and equipment through a RESTful interface.
+- **Workout Management**: Create, update, and delete training sessions.
+- **Athlete Registration**: Athletes can be registered and assigned to specific workout sessions.
+- **Equipment Inventory**: Track and manage the equipment needed for training sessions.
+- **PostgreSQL Integration**: Reliable data storage and retrieval.
+- **Dockerized Environment**: Simplified deployment using Docker containers.
+- **Scalable Architecture**: Designed with future features in mind (e.g., user interfaces, notifications).
+
+## Technologies Used
+- **Backend**: C# with .NET 8
+- **Database**: PostgreSQL
+- **Containerization**: Docker
+- **API**: REST
+
+## Getting Started
+
+### Prerequisites
+- [.NET 8 SDK](https://dotnet.microsoft.com/download)
+- [Docker](https://www.docker.com/get-started)
+- [PostgreSQL](https://www.postgresql.org/)
+
+### Setup Instructions
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/MatasPal/TrainingSystem.git
+   cd TrainingSystem

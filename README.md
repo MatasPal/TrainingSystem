@@ -15,10 +15,10 @@ This project is containerized with **Docker** for easier deployment and uses **P
 - **Scalable Architecture**: Designed with future features in mind (e.g., user interfaces, notifications).
 
 ## Technologies Used
-- **Backend**: C# with .NET 8
-- **Database**: PostgreSQL
-- **Containerization**: Docker
-- **API**: REST
+- **Backend**: C# with .NET 8;
+- **Database**: PostgreSQL;
+- **Containerization**: Docker;
+- **API**: REST.
 
 ## Getting Started
 

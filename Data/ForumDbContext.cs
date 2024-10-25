@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using TrainingSystem.Auth.Model;
 using TrainingSystem.Data.Entities;
 
 namespace TrainingSystem.Data;
 
-public class ForumDbContext : DbContext
+public class ForumDbContext : IdentityDbContext<ForumUser>
 {
     private readonly IConfiguration _configuration;
     public DbSet<Trainer> Trainers { get; set; }

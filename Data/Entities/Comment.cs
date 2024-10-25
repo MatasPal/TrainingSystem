@@ -1,4 +1,7 @@
-﻿namespace TrainingSystem.Data.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using TrainingSystem.Auth.Model;
+
+namespace TrainingSystem.Data.Entities;
 
 public class Comment
 {
@@ -11,6 +14,10 @@ public class Comment
     
     public int TrainerId { get; set; }
     public Trainer Trainer { get; set; }
+    
+    [Required]
+    public required string UserId { get; set; }
+    public ForumUser User { get; set; }
     public CommentDto ToDto()
     {
         return new CommentDto(Id, Text);

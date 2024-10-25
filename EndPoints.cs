@@ -51,7 +51,8 @@ public static class EndPoints
             {
                 Text = CreateCommentDto.Text,
                 WorkoutId = workoutId,
-                TrainerId = trainerId
+                TrainerId = trainerId,
+                UserId = ""
             };
     
             dbContext.Comments.Add(comment);
@@ -206,7 +207,8 @@ public static class EndPoints
                 TypeTr = createWorkoutDto.TypeTr,
                 Place = createWorkoutDto.Place,
                 Price = createWorkoutDto.Price,
-                TrainerId = trainerId
+                TrainerId = trainerId,
+                UserId = ""
             };
     
             dbContext.Workouts.Add(workout);
@@ -296,7 +298,8 @@ public static class EndPoints
             {
                 Name = createTrainerDto.Name,
                 Experience = createTrainerDto.Experience,
-                TypeTr = createTrainerDto.TypeTr
+                TypeTr = createTrainerDto.TypeTr,
+                UserId = ""
             };
     
             dbContext.Trainers.Add(trainer);

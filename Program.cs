@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using TrainingSystem.Auth;
 using TrainingSystem.Auth.Model;
 
 
@@ -26,6 +27,9 @@ builder.Services.AddFluentValidationAutoValidation(configuration =>
     configuration.OverrideDefaultResultFactoryWith<ProblemDetailsResultFactory>();
 });
 builder.Services.AddResponseCaching();
+
+builder.Services.AddTransient<JwtTokenService>();
+builder.Services.AddScoped<AuthSeeder>();
 
 builder.Services.AddIdentity<ForumUser, IdentityRole>()
     .AddEntityFrameworkStores<ForumDbContext>()
@@ -41,12 +45,19 @@ builder.Services.AddAuthentication(options =>
     options.MapInboundClaims = false;
     options.TokenValidationParameters.ValidAudience = builder.Configuration["Jwt:Audience"];
     options.TokenValidationParameters.ValidIssuer = builder.Configuration["Jwt:ValidIssuer"];
-    options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
+    options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]));
 });
-
+ 
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+using var scope = app.Services.CreateScope();
+
+var dbContext = scope.ServiceProvider.GetRequiredService<ForumDbContext>();
+
+var dbSeeder = scope.ServiceProvider.GetRequiredService<AuthSeeder>();
+await dbSeeder.SeedAsync();
 
 /*
 /api/v1/topics GET List 200
@@ -59,6 +70,7 @@ var app = builder.Build();
 app.AddTrainerApi();
 app.AddWorkoutApi();
 app.AddCommentApi();
+app.AddAuthApi();
 
 
 app.MapControllers();

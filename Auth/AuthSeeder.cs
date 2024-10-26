@@ -26,24 +26,24 @@ public class AuthSeeder
             UserName = "admin",
             Email = "admin@admin.com"
         };
-        
+    
         var existAdminUser = await _userManager.FindByNameAsync(newAdminUser.UserName);
-        if (existAdminUser != null)
+        if (existAdminUser == null)
         {
-            var createAdminUserResult = await _userManager.CreateAsync(newAdminUser, "admin");
+            var createAdminUserResult = await _userManager.CreateAsync(newAdminUser, "VerySafePassword1!");
             if (createAdminUserResult.Succeeded)
             {
-                foreach (var role in ForumRoles.All)
-                {
-                    await _userManager.AddToRoleAsync(newAdminUser, role);
-                }
-                //await _userManager.AddToRoleAsync(newAdminUser, ForumRoles.All);
+                await _userManager.AddToRolesAsync(newAdminUser, ForumRoles.All);
             }
         }
     }
-
     private async Task AddDefaultRolesAsync()
     {
-        throw new NotImplementedException();
+        foreach (var role in ForumRoles.All)
+        {
+            var roleExist = await _roleManager.RoleExistsAsync(role);
+            if(!roleExist)
+                await _roleManager.CreateAsync(new IdentityRole(role));
+        }
     }
 }

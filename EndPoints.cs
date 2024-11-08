@@ -1,5 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
+using TrainingSystem.Auth.Model;
 using TrainingSystem.Data;
 using TrainingSystem.Data.Entities;
 
@@ -32,7 +36,7 @@ public static class EndPoints
             return Results.Ok(comment.Select(comment => comment.ToDto()));
         });
 
-        commentGroup.MapPost("/comments", async (int trainerId, int workoutId, CreateCommentDto CreateCommentDto, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        commentGroup.MapPost("/comments", async (int trainerId, int workoutId, CreateCommentDto CreateCommentDto, HttpContext httpContext, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
             if (trainer == null)
@@ -51,7 +55,8 @@ public static class EndPoints
             {
                 Text = CreateCommentDto.Text,
                 WorkoutId = workoutId,
-                TrainerId = trainerId
+                TrainerId = trainerId,
+                UserId = httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub)
             };
     
             dbContext.Comments.Add(comment);
@@ -194,7 +199,7 @@ public static class EndPoints
             return Results.Ok(workout.Select(workout => workout.ToDto()));
         });
 
-        workoutGroup.MapPost("/workouts", async (int trainerId, CreateWorkoutDto createWorkoutDto, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        workoutGroup.MapPost("/workouts", [Authorize(Roles = ForumRoles.ForumUser)] async (int trainerId, CreateWorkoutDto createWorkoutDto, HttpContext httpContext, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
             if (trainer == null)
@@ -206,7 +211,8 @@ public static class EndPoints
                 TypeTr = createWorkoutDto.TypeTr,
                 Place = createWorkoutDto.Place,
                 Price = createWorkoutDto.Price,
-                TrainerId = trainerId
+                TrainerId = trainerId,
+                UserId = httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub)
             };
     
             dbContext.Workouts.Add(workout);
@@ -234,7 +240,7 @@ public static class EndPoints
             return TypedResults.Ok(workout.ToDto());
         });
 
-        workoutGroup.MapPut("/workouts/{workoutId}", async (int trainerId, int workoutId, UpdateWorkoutDto dto, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        workoutGroup.MapPut("/workouts/{workoutId}", [Authorize] async (int trainerId, int workoutId, UpdateWorkoutDto dto, ForumDbContext dbContext, HttpContext httpContext,  CancellationToken cancellationToken) =>
         {
             var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
             if (trainer == null)
@@ -251,6 +257,13 @@ public static class EndPoints
             workout.TypeTr = dto.TypeTr;
             workout.Place = dto.Place;
             workout.Price = dto.Price;
+
+            if (!httpContext.User.IsInRole(ForumRoles.Admin) &&
+                httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != workout.UserId)
+            {
+                //NotFound()
+                return Results.Forbid();
+            }
     
             dbContext.Workouts.Update(workout);
             await dbContext.SaveChangesAsync();
@@ -285,18 +298,19 @@ public static class EndPoints
     {
         var trainersGroup = app.MapGroup("/api").AddFluentValidationAutoValidation();
 
-        trainersGroup.MapGet("/trainers", async (ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        trainersGroup.MapGet("/trainers", [Authorize] async (ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             return (await dbContext.Trainers.ToListAsync(cancellationToken)).Select(trainer => trainer.ToDto());
         });
         
-        trainersGroup.MapPost("/trainers", async (CreateTrainerDto createTrainerDto, ForumDbContext dbContext) =>
+        trainersGroup.MapPost("/trainers", [Authorize(Roles = ForumRoles.ForumUser)] async (CreateTrainerDto createTrainerDto, HttpContext httpContext, ForumDbContext dbContext) =>
         {
             var trainer = new Trainer()
             {
                 Name = createTrainerDto.Name,
                 Experience = createTrainerDto.Experience,
-                TypeTr = createTrainerDto.TypeTr
+                TypeTr = createTrainerDto.TypeTr,
+                UserId = httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub)
             };
     
             dbContext.Trainers.Add(trainer);
@@ -304,7 +318,7 @@ public static class EndPoints
             await dbContext.SaveChangesAsync();
     
             return TypedResults.Created($"/api/trainers/{trainer.Id}", trainer.ToDto());
-        });
+        }).WithName("CreateTrainer");
 
         trainersGroup.MapGet("/trainers/{trainerId}", async (int trainerId, ForumDbContext dbContext) =>
         {
@@ -312,17 +326,24 @@ public static class EndPoints
             return trainer == null ? Results.NotFound("No trainer found by this ID") : TypedResults.Ok(trainer.ToDto());
         });
         
-        trainersGroup.MapPut("/trainers/{trainerId}", async(UpdateTrainerDto dto, int trainerId, ForumDbContext dbContext) =>
+        trainersGroup.MapPut("/trainers/{trainerId}", [Authorize] async (UpdateTrainerDto dto, int trainerId, HttpContext httpContext ,ForumDbContext dbContext) =>
         {
             var trainer = await dbContext.Trainers.FindAsync(trainerId);
             if (trainer == null)
             {
                 return Results.NotFound("No trainer found by this ID");
             }
-
+            
+            if (!httpContext.User.IsInRole(ForumRoles.Admin) &&
+                httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != trainer.UserId)
+            {
+                //NotFound()
+                return Results.Forbid();
+            }
+    
             trainer.Experience = dto.Experience;
             trainer.TypeTr = dto.TypeTr;
-    
+            
             dbContext.Trainers.Update(trainer);
             await dbContext.SaveChangesAsync();
     

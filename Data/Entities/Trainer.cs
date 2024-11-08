@@ -1,4 +1,7 @@
-﻿namespace TrainingSystem.Data.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using TrainingSystem.Auth.Model;
+
+namespace TrainingSystem.Data.Entities;
 
 public class Trainer
 {
@@ -6,8 +9,11 @@ public class Trainer
     public required string Name { get; set; }
     public required int Experience { get; set; }
     public required string TypeTr { get; set; }
-    
     public bool IsBlocked{get; set;}
+    
+    [Required]
+    public required string UserId { get; set; }
+    public ForumUser User { get; set; }
 
     public TrainerDto ToDto()
     {

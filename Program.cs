@@ -1,3 +1,4 @@
+using System.Text;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -8,15 +9,57 @@ using SharpGrip.FluentValidation.AutoValidation.Shared.Extensions;
 using TrainingSystem;
 using TrainingSystem.Data;
 using TrainingSystem.Data.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using TrainingSystem.Auth;
+using TrainingSystem.Auth.Model;
+
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
 builder.Services.AddDbContext<ForumDbContext>();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddFluentValidationAutoValidation(configuration =>
 {
     configuration.OverrideDefaultResultFactoryWith<ProblemDetailsResultFactory>();
 });
+builder.Services.AddResponseCaching();
+builder.Services.AddTransient<JwtTokenService>();
+builder.Services.AddScoped<AuthSeeder>();
+builder.Services.AddTransient<SessionService>();
+
+//AUTH
+builder.Services.AddIdentity<ForumUser, IdentityRole>()
+    .AddEntityFrameworkStores<ForumDbContext>()
+    .AddDefaultTokenProviders();
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.MapInboundClaims = false;
+    options.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:ValidAudience"];
+    options.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:ValidIssuer"];
+    options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]));
+});
+ 
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
+
+using var scope = app.Services.CreateScope();
+
+//var dbContext = scope.ServiceProvider.GetRequiredService<ForumDbContext>();
+
+var dbSeeder = scope.ServiceProvider.GetRequiredService<AuthSeeder>();
+await dbSeeder.SeedAsync();
 
 /*
 /api/v1/topics GET List 200
@@ -29,8 +72,12 @@ var app = builder.Build();
 app.AddTrainerApi();
 app.AddWorkoutApi();
 app.AddCommentApi();
+app.AddAuthApi();
 
-
+app.MapControllers();
+app.UseResponseCaching();
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
 
 public class ProblemDetailsResultFactory : IFluentValidationAutoValidationResultFactory
@@ -118,3 +165,5 @@ public record UpdateCommentDto(string Text)
         }
     }
 }
+
+

@@ -9,13 +9,21 @@
     <ItemGroup>
       <PackageReference Include="FluentValidation" Version="11.9.2" />
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0">
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Identity.Service.EntityFrameworkCore" Version="1.0.0-preview1-final" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         <PrivateAssets>all</PrivateAssets>
       </PackageReference>
-      <PackageReference Include="Npgsql" Version="7.0.0" />
-      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
+      <PackageReference Include="Npgsql" Version="8.0.5" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.5" />
       <PackageReference Include="O9d.AspNet.FluentValidation" Version="0.1.1" />
       <PackageReference Include="SharpGrip.FluentValidation.AutoValidation.Endpoints" Version="1.4.0" />
     </ItemGroup>

@@ -27,13 +27,15 @@ builder.Services.AddFluentValidationAutoValidation(configuration =>
     configuration.OverrideDefaultResultFactoryWith<ProblemDetailsResultFactory>();
 });
 builder.Services.AddResponseCaching();
-
 builder.Services.AddTransient<JwtTokenService>();
 builder.Services.AddScoped<AuthSeeder>();
+builder.Services.AddTransient<SessionService>();
 
+//AUTH
 builder.Services.AddIdentity<ForumUser, IdentityRole>()
     .AddEntityFrameworkStores<ForumDbContext>()
     .AddDefaultTokenProviders();
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -43,9 +45,9 @@ builder.Services.AddAuthentication(options =>
 }).AddJwtBearer(options =>
 {
     options.MapInboundClaims = false;
-    options.TokenValidationParameters.ValidAudience = builder.Configuration["Jwt:Audience"];
-    options.TokenValidationParameters.ValidIssuer = builder.Configuration["Jwt:ValidIssuer"];
-    options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]));
+    options.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:ValidAudience"];
+    options.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:ValidIssuer"];
+    options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]));
 });
  
 builder.Services.AddAuthorization();
@@ -54,7 +56,7 @@ var app = builder.Build();
 
 using var scope = app.Services.CreateScope();
 
-var dbContext = scope.ServiceProvider.GetRequiredService<ForumDbContext>();
+//var dbContext = scope.ServiceProvider.GetRequiredService<ForumDbContext>();
 
 var dbSeeder = scope.ServiceProvider.GetRequiredService<AuthSeeder>();
 await dbSeeder.SeedAsync();
@@ -71,7 +73,6 @@ app.AddTrainerApi();
 app.AddWorkoutApi();
 app.AddCommentApi();
 app.AddAuthApi();
-
 
 app.MapControllers();
 app.UseResponseCaching();

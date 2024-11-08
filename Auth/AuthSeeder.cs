@@ -27,8 +27,8 @@ public class AuthSeeder
             Email = "admin@admin.com"
         };
     
-        var existAdminUser = await _userManager.FindByNameAsync(newAdminUser.UserName);
-        if (existAdminUser == null)
+        var existingAdminUser = await _userManager.FindByNameAsync(newAdminUser.UserName);
+        if (existingAdminUser == null)
         {
             var createAdminUserResult = await _userManager.CreateAsync(newAdminUser, "VerySafePassword1!");
             if (createAdminUserResult.Succeeded)

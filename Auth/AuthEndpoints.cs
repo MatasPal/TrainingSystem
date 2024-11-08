@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using TrainingSystem.Auth.Model;
 using TrainingSystem.Data;
 
@@ -11,9 +12,9 @@ public static class AuthEndpoints
     public static void AddAuthApi(this WebApplication app)
     {
         //register
-        app.MapPost("api/accounts", async ( UserManager<ForumUser> userManager, RegisterUserDto dto)=>
+        app.MapPost("api/accounts", async (UserManager<ForumUser> userManager, [FromBody] RegisterUserDto dto) =>
         {
-            //check user
+            //check user exists
             var user = await userManager.FindByNameAsync(dto.UserName);
             if (user != null) 
                 return Results.UnprocessableEntity("Username already taken");
@@ -35,23 +36,25 @@ public static class AuthEndpoints
         });
         
         //login
-        
-        app.MapPost("api/login", async ( UserManager<ForumUser> userManager,JwtTokenService jwtTokenService, HttpContext httpContext, LoginDto dto)=>
+        app.MapPost("api/login", async ( UserManager<ForumUser> userManager, JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext, [FromBody] LoginDto dto)=>
         {
             //check user
             var user = await userManager.FindByNameAsync(dto.UserName);
             if (user == null) 
                 return Results.UnprocessableEntity("Username does not exist");
 
-            var isPassword = await userManager.CheckPasswordAsync(user, dto.Password);
-            if(!isPassword)
-                return Results.UnprocessableEntity("Username or password is incorrect");
+            var isPasswordValid = await userManager.CheckPasswordAsync(user, dto.Password);
+            if(!isPasswordValid)
+                return Results.UnprocessableEntity("Username or password was incorrect.");
 
             var roles = await userManager.GetRolesAsync(user);
-            
+
+            var sessionId = Guid.NewGuid();
             var expiresAt = DateTime.UtcNow.AddDays(3);
             var accessToken = jwtTokenService.CreateAccessToken(user.UserName, user.Id, roles);
-            var refreshToken = jwtTokenService.CreateRefreshToken(user.Id, expiresAt);
+            var refreshToken = jwtTokenService.CreateRefreshToken(sessionId, user.Id, expiresAt);
+
+            await sessionService.CreateSessionAsync(sessionId, user.Id, refreshToken, expiresAt);
 
             var cookieOptions = new CookieOptions
             {
@@ -66,7 +69,7 @@ public static class AuthEndpoints
             return Results.Ok(new SuccessfulLoginDto(accessToken));
         });
 
-        app.MapPost("api/acessToken", async (UserManager<ForumUser> userManager,JwtTokenService jwtTokenService, HttpContext httpContext) =>
+        app.MapPost("api/accessToken", async (UserManager<ForumUser> userManager,JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext) =>
         {
             if (!httpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken))
             {
@@ -78,6 +81,18 @@ public static class AuthEndpoints
                 return Results.UnprocessableEntity();
             }
 
+            var sessionId = claims.FindFirstValue("SessionId");
+            if (string.IsNullOrWhiteSpace(sessionId))
+            {
+                return Results.UnprocessableEntity();
+            }
+            
+            var sessionIdAsGuid = Guid.Parse(sessionId);
+            if (!await sessionService.IsSessionValidAsync(sessionIdAsGuid, refreshToken))
+            {
+                return Results.UnprocessableEntity();
+            }
+            
             var userId = claims.FindFirstValue(JwtRegisteredClaimNames.Sub);
             var user = await userManager.FindByIdAsync(userId);
             if (user == null)
@@ -89,7 +104,7 @@ public static class AuthEndpoints
             
             var expiresAt = DateTime.UtcNow.AddDays(3);
             var accessToken = jwtTokenService.CreateAccessToken(user.UserName, user.Id, roles);
-            var newrefreshToken = jwtTokenService.CreateRefreshToken(user.Id, expiresAt);
+            var newRefreshToken = jwtTokenService.CreateRefreshToken(sessionIdAsGuid, user.Id, expiresAt);
             
             var cookieOptions = new CookieOptions
             {
@@ -99,9 +114,35 @@ public static class AuthEndpoints
                 //Secure = false => should be true
             };
             
-            httpContext.Response.Cookies.Append("RefreshToken", refreshToken, cookieOptions);
+            httpContext.Response.Cookies.Append("RefreshToken", newRefreshToken, cookieOptions);
+            
+            await sessionService.ExtendSessionAsync(sessionIdAsGuid, newRefreshToken, expiresAt);
             
             return Results.Ok(new SuccessfulLoginDto(accessToken));
+        });
+        
+        app.MapPost("api/logout", async (UserManager<ForumUser> userManager,JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext) =>
+        {
+            if (!httpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken))
+            {
+                return Results.UnprocessableEntity();
+            }
+
+            if (!jwtTokenService.TryParseRefreshToken(refreshToken, out var claims))
+            {
+                return Results.UnprocessableEntity();
+            }
+
+            var sessionId = claims.FindFirstValue("SessionId");
+            if (string.IsNullOrWhiteSpace(sessionId))
+            {
+                return Results.UnprocessableEntity();
+            }
+            
+            await sessionService.InvalidateSessionAsync(Guid.Parse(sessionId));
+            httpContext.Response.Cookies.Delete("RefreshToken");
+            
+            return Results.Ok();
         });
     }
     

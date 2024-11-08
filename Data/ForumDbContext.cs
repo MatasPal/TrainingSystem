@@ -11,6 +11,7 @@ public class ForumDbContext : IdentityDbContext<ForumUser>
     public DbSet<Trainer> Trainers { get; set; }
     public DbSet<Workout> Workouts { get; set; }
     public DbSet<Comment> Comments { get; set; }
+    public DbSet<Session> Sessions { get; set; }
 
     public ForumDbContext(IConfiguration configuration)
     {

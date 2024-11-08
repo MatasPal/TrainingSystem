@@ -6,13 +6,9 @@ namespace TrainingSystem.Data.Entities;
 public class Workout
 {
     public int Id { get; set; }
-    
     public required string TypeTr { get; set; }
-    
     public required string Place { get; set; }
-    
     public required int Price { get; set; }
-    
     public int TrainerId { get; set; }
     public Trainer Trainer { get; set; }
     

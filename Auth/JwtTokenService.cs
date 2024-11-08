@@ -14,9 +14,9 @@ public class JwtTokenService
 
     public JwtTokenService(IConfiguration configuration)
     {
-        _authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]));
-        _issuer = configuration["Jwt:Issuer"];
-        _audience = configuration["Jwt:Audience"];
+        _authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
+        _issuer = configuration["JWT:ValidIssuer"];
+        _audience = configuration["JWT:ValidAudience"];
     }
 
     public string CreateAccessToken(string userName, string userId, IEnumerable<string> roles)
@@ -41,12 +41,13 @@ public class JwtTokenService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
     
-    public string CreateRefreshToken( string userId, DateTime expires)
+    public string CreateRefreshToken(Guid sessionId, string userId, DateTime expires)
     {
         var authClaims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Sub, userId),
+            new("SessionId", sessionId.ToString()),
         };
 
         var token = new JwtSecurityToken(

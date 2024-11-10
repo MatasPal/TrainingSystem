@@ -36,7 +36,7 @@ public static class EndPoints
             return Results.Ok(comment.Select(comment => comment.ToDto()));
         });
 
-        commentGroup.MapPost("/comments", async (int trainerId, int workoutId, CreateCommentDto CreateCommentDto, HttpContext httpContext, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        commentGroup.MapPost("/comments", [Authorize(Roles = ForumRoles.ForumUser)] async (int trainerId, int workoutId, CreateCommentDto CreateCommentDto, HttpContext httpContext, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
             if (trainer == null)
@@ -64,33 +64,8 @@ public static class EndPoints
     
             return TypedResults.Created($"/api/trainers/{trainerId}/workouts/{workoutId}/comments/{comment.Id}", comment.ToDto());
                 
-        });
-        /*commentGroup.MapGet("/comments/{commentId}", async (int trainerId, int workoutId, int commentId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
-        {
-            var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
-            if (trainer == null)
-            {
-                return Results.NotFound("Trainer not found");
-            }
-            
-            var workout = await dbContext.Workouts
-                .Where(w => w.Id == workoutId && w.TrainerId == trainerId)
-                .FirstOrDefaultAsync(cancellationToken);
-            if (workout == null)
-            {
-                return Results.NotFound("Workout not found");
-            }
-            
-            var comment = await dbContext.Comments
-                .Where(c => c.Id == commentId && c.WorkoutId == workoutId && c.TrainerId == trainerId)
-                .ToListAsync(cancellationToken);
-            if (comment == null)
-            {
-                return Results.NotFound("Comment not found");
-            }
-            return Results.Ok(comment.Select(comment => comment.ToDto()));
-            //return TypedResults.Ok(comment.ToDto());
-        });*/
+        }).WithName("CreateComment");
+        
         commentGroup.MapGet("/comments/{commentId}", async (int trainerId, int workoutId, int commentId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
@@ -118,7 +93,7 @@ public static class EndPoints
             return TypedResults.Ok(comment.ToDto()); 
         });
 
-        commentGroup.MapPut("/comments/{commentId}", async (int trainerId, int workoutId, int commentId, UpdateCommentDto dto, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        commentGroup.MapPut("/comments/{commentId}", [Authorize] async (int trainerId, int workoutId, int commentId, UpdateCommentDto dto, ForumDbContext dbContext, HttpContext httpContext, CancellationToken cancellationToken) =>
         {
             var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
             if (trainer == null)
@@ -138,6 +113,13 @@ public static class EndPoints
             if (comment == null)
             {
                 return Results.NotFound("Comment not found");
+            }
+            
+            if (!httpContext.User.IsInRole(ForumRoles.Admin) &&
+                httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != workout.UserId)
+            {
+                //NotFound()
+                return Results.Forbid();
             }
             
             comment.Text = dto.Text;
@@ -149,7 +131,7 @@ public static class EndPoints
                 
         });
         
-        commentGroup.MapDelete("/comments/{commentId}", async (int trainerId, int workoutId, int commentId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        commentGroup.MapDelete("/comments/{commentId}", [Authorize] async (int trainerId, int workoutId, int commentId, ForumDbContext dbContext, HttpContext httpContext, CancellationToken cancellationToken) =>
         {
             var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
             if (trainer == null)
@@ -170,6 +152,13 @@ public static class EndPoints
             if (comment == null)
             {
                 return Results.NotFound("Comment not found");
+            }
+            
+            if (!httpContext.User.IsInRole(ForumRoles.Admin) &&
+                httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != workout.UserId)
+            {
+                //NotFound()
+                return Results.Forbid();
             }
             
             dbContext.Comments.Remove(comment);
@@ -221,7 +210,7 @@ public static class EndPoints
     
             return TypedResults.Created($"/api/trainers/{trainerId}/workouts/{workout.Id}", workout.ToDto());
 
-        });
+        }).WithName("CreateWorkout");
         
         workoutGroup.MapGet("/workouts/{workoutId}", async (int trainerId, int workoutId,  ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
@@ -240,7 +229,7 @@ public static class EndPoints
             return TypedResults.Ok(workout.ToDto());
         });
 
-        workoutGroup.MapPut("/workouts/{workoutId}", [Authorize] async (int trainerId, int workoutId, UpdateWorkoutDto dto, ForumDbContext dbContext, HttpContext httpContext,  CancellationToken cancellationToken) =>
+        workoutGroup.MapPut("/workouts/{workoutId}", [Authorize] async (int trainerId, int workoutId, UpdateWorkoutDto dto, ForumDbContext dbContext, HttpContext httpContext, CancellationToken cancellationToken) =>
         {
             var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
             if (trainer == null)
@@ -272,7 +261,7 @@ public static class EndPoints
                 
         });
         
-        workoutGroup.MapDelete("/workouts/{workoutId}", async (int trainerId, int workoutId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        workoutGroup.MapDelete("/workouts/{workoutId}", [Authorize] async (int trainerId, int workoutId, ForumDbContext dbContext, HttpContext httpContext, CancellationToken cancellationToken) =>
         {
             var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
             if (trainer == null)
@@ -286,6 +275,14 @@ public static class EndPoints
             {
                 return Results.NotFound("No workout found by this ID");
             }
+            
+            if (!httpContext.User.IsInRole(ForumRoles.Admin) &&
+                httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != workout.UserId)
+            {
+                //NotFound()
+                return Results.Forbid();
+            }
+            
             dbContext.Workouts.Remove(workout);
             await dbContext.SaveChangesAsync();
     
@@ -326,7 +323,7 @@ public static class EndPoints
             return trainer == null ? Results.NotFound("No trainer found by this ID") : TypedResults.Ok(trainer.ToDto());
         });
         
-        trainersGroup.MapPut("/trainers/{trainerId}", [Authorize] async (UpdateTrainerDto dto, int trainerId, HttpContext httpContext ,ForumDbContext dbContext) =>
+        trainersGroup.MapPut("/trainers/{trainerId}", [Authorize] async (UpdateTrainerDto dto, int trainerId, HttpContext httpContext, ForumDbContext dbContext) =>
         {
             var trainer = await dbContext.Trainers.FindAsync(trainerId);
             if (trainer == null)
@@ -350,13 +347,21 @@ public static class EndPoints
             return Results.Ok(trainer.ToDto());
         });
 
-        trainersGroup.MapDelete("/trainers/{trainerId}", async (int trainerId, ForumDbContext dbContext) =>
+        trainersGroup.MapDelete("/trainers/{trainerId}", [Authorize] async (int trainerId, HttpContext httpContext, ForumDbContext dbContext) =>
         {
             var trainer = await dbContext.Trainers.FindAsync(trainerId);
             if (trainer == null)
             {
                 return Results.NotFound("No trainer found by this ID");
             }
+            
+            if (!httpContext.User.IsInRole(ForumRoles.Admin) &&
+                httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != trainer.UserId)
+            {
+                //NotFound()
+                return Results.Forbid();
+            }
+            
             dbContext.Trainers.Remove(trainer);
             await dbContext.SaveChangesAsync();
     

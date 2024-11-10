@@ -12,7 +12,7 @@ public static class AuthEndpoints
     public static void AddAuthApi(this WebApplication app)
     {
         //register
-        app.MapPost("api/accounts", async (UserManager<ForumUser> userManager, [FromBody] RegisterUserDto dto) =>
+        app.MapPost("api/accounts", async (UserManager<ForumUser> userManager, [FromBody] RegisterUserDto dto, ForumDbContext _dbContext) =>
         {
             //check user exists
             var user = await userManager.FindByNameAsync(dto.UserName);
@@ -26,17 +26,41 @@ public static class AuthEndpoints
             };
             
             // TODO: wrap in transaction 
-            var createUserResult = await userManager.CreateAsync(newUser, dto.Password);
+            /*var createUserResult = await userManager.CreateAsync(newUser, dto.Password);
             if(!createUserResult.Succeeded)
                 return Results.UnprocessableEntity();
             
             await userManager.AddToRoleAsync(newUser, ForumRoles.ForumUser);
 
-            return Results.Created();
+            return Results.Created();*/
+            // ----
+            // Transaction
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
+            var createUserResult = await userManager.CreateAsync(newUser, dto.Password);
+            if (!createUserResult.Succeeded)
+            {
+                var errors = createUserResult.Errors.Select(e => e.Description).ToList();
+                return Results.UnprocessableEntity(new { Errors = errors });
+            }
+
+            var roleResult = await userManager.AddToRoleAsync(newUser, ForumRoles.ForumUser);
+            if (!roleResult.Succeeded)
+            {
+                await transaction.RollbackAsync(); // Rollback in case role assignment fails
+                var errors = roleResult.Errors.Select(e => e.Description).ToList();
+                return Results.UnprocessableEntity(new { Errors = errors });
+            }
+
+            await transaction.CommitAsync();
+            // ----
+
+            return Results.Created("api/login", new UserDto(newUser.Id, newUser.UserName, newUser.Email));
         });
         
         //login
-        app.MapPost("api/login", async ( UserManager<ForumUser> userManager, JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext, [FromBody] LoginDto dto)=>
+        app.MapPost("api/login", async ( UserManager<ForumUser> userManager, JwtTokenService jwtTokenService, 
+            SessionService sessionService, HttpContext httpContext, [FromBody] LoginDto dto)=>
         {
             //check user
             var user = await userManager.FindByNameAsync(dto.UserName);
@@ -61,7 +85,7 @@ public static class AuthEndpoints
                 HttpOnly = true,
                 SameSite = SameSiteMode.Lax,
                 Expires = expiresAt,
-                //Secure = false => should be true
+                Secure = false //=> should be true
             };
             
             httpContext.Response.Cookies.Append("RefreshToken", refreshToken, cookieOptions);
@@ -69,35 +93,36 @@ public static class AuthEndpoints
             return Results.Ok(new SuccessfulLoginDto(accessToken));
         });
 
-        app.MapPost("api/accessToken", async (UserManager<ForumUser> userManager,JwtTokenService jwtTokenService, SessionService sessionService, HttpContext httpContext) =>
+        app.MapPost("api/accessToken", async (UserManager<ForumUser> userManager,JwtTokenService jwtTokenService, 
+            SessionService sessionService, HttpContext httpContext) =>
         {
             if (!httpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken))
             {
-                return Results.UnprocessableEntity();
+                return Results.UnprocessableEntity("1");
             }
 
             if (!jwtTokenService.TryParseRefreshToken(refreshToken, out var claims))
             {
-                return Results.UnprocessableEntity();
+                return Results.UnprocessableEntity("2");
             }
 
             var sessionId = claims.FindFirstValue("SessionId");
             if (string.IsNullOrWhiteSpace(sessionId))
             {
-                return Results.UnprocessableEntity();
+                return Results.UnprocessableEntity("3");
             }
             
             var sessionIdAsGuid = Guid.Parse(sessionId);
             if (!await sessionService.IsSessionValidAsync(sessionIdAsGuid, refreshToken))
             {
-                return Results.UnprocessableEntity();
+                return Results.UnprocessableEntity("4");
             }
             
             var userId = claims.FindFirstValue(JwtRegisteredClaimNames.Sub);
             var user = await userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return Results.UnprocessableEntity();
+                return Results.UnprocessableEntity("5");
             }
             
             var roles = await userManager.GetRolesAsync(user);
@@ -111,7 +136,7 @@ public static class AuthEndpoints
                 HttpOnly = true,
                 SameSite = SameSiteMode.Lax,
                 Expires = expiresAt,
-                //Secure = false => should be true
+                Secure = false //=> should be true
             };
             
             httpContext.Response.Cookies.Append("RefreshToken", newRefreshToken, cookieOptions);
@@ -147,6 +172,7 @@ public static class AuthEndpoints
     }
     
     public record RegisterUserDto(string UserName, string Email, string Password);
+    public record UserDto(string UserId, string Username, string Email);
     public record LoginDto(string UserName, string Password);
     public record SuccessfulLoginDto(string AccessToken);
 }

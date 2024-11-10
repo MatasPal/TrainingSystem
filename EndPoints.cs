@@ -295,7 +295,7 @@ public static class EndPoints
     {
         var trainersGroup = app.MapGroup("/api").AddFluentValidationAutoValidation();
 
-        trainersGroup.MapGet("/trainers", [Authorize] async (ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        trainersGroup.MapGet("/trainers", async (ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             return (await dbContext.Trainers.ToListAsync(cancellationToken)).Select(trainer => trainer.ToDto());
         });

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TrainingSystem.Data;
@@ -11,9 +12,11 @@ using TrainingSystem.Data;
 namespace TrainingSystem.Migrations
 {
     [DbContext(typeof(ForumDbContext))]
-    partial class ForumDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241112195427_changing-models")]
+    partial class changingmodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -319,7 +322,7 @@ namespace TrainingSystem.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("TrPrograms");
+                    b.ToTable("Trainers");
                 });
 
             modelBuilder.Entity("TrainingSystem.Data.Entities.Workout", b =>

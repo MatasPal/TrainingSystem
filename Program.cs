@@ -69,7 +69,7 @@ await dbSeeder.SeedAsync();
 /api/v1/topics{id} DELETE Remove 200/204
 */
 
-app.AddTrainerApi();
+app.AddTrProgramApi();
 app.AddWorkoutApi();
 app.AddCommentApi();
 app.AddAuthApi();
@@ -93,27 +93,28 @@ public class ProblemDetailsResultFactory : IFluentValidationAutoValidationResult
         return TypedResults.Problem(problemDetails);
     }
 }
-//TRAINER DTO
-public record CreateTrainerDto(string Name, int Experience, string TypeTr)
+//TRAINING PROGRAM DTO
+public record CreateTrProgramDto(string Name, string Descr, int Difficulty, string Trainer, string Duration)
 {
-    public class CreateTrainerDtoValidator : AbstractValidator<CreateTrainerDto>
+    public class CreateTrProgramDtoValidator : AbstractValidator<CreateTrProgramDto>
     {
-        public CreateTrainerDtoValidator()
+        public CreateTrProgramDtoValidator()
         {
-            RuleFor(dto => dto.Name).NotEmpty().NotNull().Length(2, 100);
-            RuleFor(dto => dto.Experience).NotEmpty().NotNull();
-            RuleFor(dto => dto.TypeTr).NotEmpty().NotNull().Length(2, 100);
+            RuleFor(dto => dto.Name).NotEmpty().NotNull().Length(3, 30);
+            RuleFor(dto => dto.Descr).NotEmpty().NotNull().Length(3, 100);
+            RuleFor(dto => dto.Difficulty).NotEmpty().NotNull();
         }
     }
 };
-public record UpdateTrainerDto(int Experience, string TypeTr)
+public record UpdateTrProgramDto(string Name, string Descr, int Difficulty, string Trainer, string Duration)
 {
-    public class UpdateTrainerDtoValidator : AbstractValidator<CreateTrainerDto>
+    public class UpdateTrProgramDtoValidator : AbstractValidator<CreateTrProgramDto>
     {
-        public UpdateTrainerDtoValidator()
+        public UpdateTrProgramDtoValidator()
         {
-            RuleFor(dto => dto.Experience).NotEmpty().NotNull();
-            RuleFor(dto => dto.TypeTr).NotEmpty().NotNull().Length(2, 100);
+            RuleFor(dto => dto.Name).NotEmpty().NotNull().Length(3, 30);
+            RuleFor(dto => dto.Descr).NotEmpty().NotNull().Length(3, 100);
+            RuleFor(dto => dto.Difficulty).NotEmpty().NotNull();
         }
     }
 }

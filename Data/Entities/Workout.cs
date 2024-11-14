@@ -9,8 +9,8 @@ public class Workout
     public required string TypeTr { get; set; }
     public required string Place { get; set; }
     public required int Price { get; set; }
-    public int TrainerId { get; set; }
-    public Trainer Trainer { get; set; }
+    public int TrProgramId { get; set; }
+    public TrProgram TrProgram { get; set; }
     
     [Required]
     public required string UserId { get; set; }

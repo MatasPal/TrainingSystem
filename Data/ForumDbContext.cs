@@ -8,7 +8,7 @@ namespace TrainingSystem.Data;
 public class ForumDbContext : IdentityDbContext<ForumUser>
 {
     private readonly IConfiguration _configuration;
-    public DbSet<Trainer> Trainers { get; set; }
+    public DbSet<TrProgram> TrPrograms { get; set; }
     public DbSet<Workout> Workouts { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Session> Sessions { get; set; }

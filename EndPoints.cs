@@ -14,17 +14,17 @@ public static class EndPoints
     //COMMENT API
     public static void AddCommentApi(this WebApplication app)
     {
-        var commentGroup = app.MapGroup("/api/trainers/{trainerId}/workouts/{workoutId}").AddFluentValidationAutoValidation();
-        commentGroup.MapGet("/comments", async (int trainerId, int workoutId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        var commentGroup = app.MapGroup("/api/trPrograms/{trProgramId}/workouts/{workoutId}").AddFluentValidationAutoValidation();
+        commentGroup.MapGet("/comments", [Authorize] async (int trProgramId, int workoutId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
-            if (trainer == null)
+            var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
+            if (trProgram == null)
             {
-                return Results.NotFound("No trainer found by this ID");
+                return Results.NotFound("No training program found by this ID");
             }
 
             var workout = await dbContext.Workouts
-                .Where(w => w.Id == workoutId && w.TrainerId == trainerId)
+                .Where(w => w.Id == workoutId && w.TrProgramId == trProgramId)
                 .ToListAsync(cancellationToken);
             if (workout == null)
             {
@@ -36,46 +36,46 @@ public static class EndPoints
             return Results.Ok(comment.Select(comment => comment.ToDto()));
         });
 
-        commentGroup.MapPost("/comments", [Authorize(Roles = ForumRoles.ForumUser)] async (int trainerId, int workoutId, CreateCommentDto CreateCommentDto, HttpContext httpContext, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        commentGroup.MapPost("/comments", [Authorize] async (int trProgramId, int workoutId, CreateCommentDto CreateCommentDto, HttpContext httpContext, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
-            if (trainer == null)
+            var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
+            if (trProgram == null)
             {
-                return Results.NotFound("Trainer not found");
+                return Results.NotFound("Training program not found");
             }
 
             var workout = await dbContext.Workouts
-                .FirstOrDefaultAsync(w => w.Id == workoutId && w.TrainerId == trainerId, cancellationToken);
+                .FirstOrDefaultAsync(w => w.Id == workoutId && w.TrProgramId == trProgramId, cancellationToken);
             if (workout == null)
             {
-                return Results.NotFound("Workout not found for this trainer");
+                return Results.NotFound("Workout not found for this training program");
             }
 
             var comment = new Comment()
             {
                 Text = CreateCommentDto.Text,
                 WorkoutId = workoutId,
-                TrainerId = trainerId,
+                TrProgramId = trProgramId,
                 UserId = httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub)
             };
     
             dbContext.Comments.Add(comment);
             await dbContext.SaveChangesAsync(cancellationToken);
     
-            return TypedResults.Created($"/api/trainers/{trainerId}/workouts/{workoutId}/comments/{comment.Id}", comment.ToDto());
+            return TypedResults.Created($"/api/trPrograms/{trProgramId}/workouts/{workoutId}/comments/{comment.Id}", comment.ToDto());
                 
         }).WithName("CreateComment");
         
-        commentGroup.MapGet("/comments/{commentId}", async (int trainerId, int workoutId, int commentId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        commentGroup.MapGet("/comments/{commentId}", [Authorize] async (int trProgramId, int workoutId, int commentId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
-            if (trainer == null)
+            var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
+            if (trProgram == null)
             {
-                return Results.NotFound("Trainer not found");
+                return Results.NotFound("Training program not found");
             }
 
             var workout = await dbContext.Workouts
-                .Where(w => w.Id == workoutId && w.TrainerId == trainerId)
+                .Where(w => w.Id == workoutId && w.TrProgramId == trProgramId)
                 .FirstOrDefaultAsync(cancellationToken);
             if (workout == null)
             {
@@ -93,15 +93,15 @@ public static class EndPoints
             return TypedResults.Ok(comment.ToDto()); 
         });
 
-        commentGroup.MapPut("/comments/{commentId}", [Authorize] async (int trainerId, int workoutId, int commentId, UpdateCommentDto dto, ForumDbContext dbContext, HttpContext httpContext, CancellationToken cancellationToken) =>
+        commentGroup.MapPut("/comments/{commentId}", [Authorize] async (int trProgramId, int workoutId, int commentId, UpdateCommentDto dto, ForumDbContext dbContext, HttpContext httpContext, CancellationToken cancellationToken) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
-            if (trainer == null)
+            var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
+            if (trProgram == null)
             {
-                return Results.NotFound("Trainer not found");
+                return Results.NotFound("Training program not found");
             }
             var workout = await dbContext.Workouts
-                .Where(w => w.Id == workoutId && w.TrainerId == trainerId)
+                .Where(w => w.Id == workoutId && w.TrProgramId == trProgramId)
                 .FirstOrDefaultAsync(cancellationToken);
             if (workout == null)
             {
@@ -131,16 +131,16 @@ public static class EndPoints
                 
         });
         
-        commentGroup.MapDelete("/comments/{commentId}", [Authorize] async (int trainerId, int workoutId, int commentId, ForumDbContext dbContext, HttpContext httpContext, CancellationToken cancellationToken) =>
+        commentGroup.MapDelete("/comments/{commentId}", [Authorize] async (int trProgramId, int workoutId, int commentId, ForumDbContext dbContext, HttpContext httpContext, CancellationToken cancellationToken) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
-            if (trainer == null)
+            var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
+            if (trProgram == null)
             {
-                return Results.NotFound("Trainer not found");
+                return Results.NotFound("Training program not found");
             }
             
             var workout = await dbContext.Workouts
-                .Where(w => w.Id == workoutId && w.TrainerId == trainerId)
+                .Where(w => w.Id == workoutId && w.TrProgramId == trProgramId)
                 .FirstOrDefaultAsync(cancellationToken);
             if (workout == null)
             {
@@ -172,55 +172,65 @@ public static class EndPoints
     //WORKOUT API
     public static void AddWorkoutApi(this WebApplication app)
     {
-        var workoutGroup = app.MapGroup("/api/trainers/{trainerId}").AddFluentValidationAutoValidation();
+        var workoutGroup = app.MapGroup("/api/trPrograms/{trProgramId}").AddFluentValidationAutoValidation();
         
-        workoutGroup.MapGet("/workouts", async (int trainerId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        workoutGroup.MapGet("/workouts", [Authorize] async (int trProgramId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
-            if (trainer == null)
+            var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
+            if (trProgram == null)
             {
-                return Results.NotFound("No trainer found by this ID");
+                return Results.NotFound("No training program found by this ID");
             }
 
             var workout = await dbContext.Workouts
-                .Where(w => w.Trainer.Id == trainerId)
+                .Where(w => w.TrProgram.Id == trProgramId)
                 .ToListAsync(cancellationToken);
             return Results.Ok(workout.Select(workout => workout.ToDto()));
         });
 
-        workoutGroup.MapPost("/workouts", [Authorize(Roles = ForumRoles.ForumUser)] async (int trainerId, CreateWorkoutDto createWorkoutDto, HttpContext httpContext, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        workoutGroup.MapPost("/workouts", [Authorize] async (int trProgramId, CreateWorkoutDto createWorkoutDto, HttpContext httpContext, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
-            if (trainer == null)
+            var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
+            if (trProgram == null)
             {
-                return Results.NotFound("No trainer found by this ID");
+                return Results.NotFound("No training program found by this ID");
             }
+            
+            if (httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != trProgram.Trainer 
+                && !httpContext.User.IsInRole(ForumRoles.Admin))
+            {
+                //NotFound()
+                return Results.Forbid();
+            }
+            
             var workout = new Workout()
             {
                 TypeTr = createWorkoutDto.TypeTr,
                 Place = createWorkoutDto.Place,
                 Price = createWorkoutDto.Price,
-                TrainerId = trainerId,
+                TrProgramId = trProgramId,
                 UserId = httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub)
             };
+            
+            
     
             dbContext.Workouts.Add(workout);
     
             await dbContext.SaveChangesAsync(cancellationToken);
     
-            return TypedResults.Created($"/api/trainers/{trainerId}/workouts/{workout.Id}", workout.ToDto());
+            return TypedResults.Created($"/api/trPrograms/{trProgramId}/workouts/{workout.Id}", workout.ToDto());
 
         }).WithName("CreateWorkout");
         
-        workoutGroup.MapGet("/workouts/{workoutId}", async (int trainerId, int workoutId,  ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        workoutGroup.MapGet("/workouts/{workoutId}", [Authorize] async (int trProgramId, int workoutId,  ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
-            if (trainer == null)
+            var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
+            if (trProgram == null)
             {
-                return Results.NotFound("No trainer found by this ID");
+                return Results.NotFound("No training program found by this ID");
             }
             var workout = await dbContext.Workouts
-                .Where(w => w.Id == workoutId && w.TrainerId == trainerId)
+                .Where(w => w.Id == workoutId && w.TrProgramId == trProgramId)
                 .FirstOrDefaultAsync(cancellationToken);
             if (workout == null)
             {
@@ -229,30 +239,31 @@ public static class EndPoints
             return TypedResults.Ok(workout.ToDto());
         });
 
-        workoutGroup.MapPut("/workouts/{workoutId}", [Authorize] async (int trainerId, int workoutId, UpdateWorkoutDto dto, ForumDbContext dbContext, HttpContext httpContext, CancellationToken cancellationToken) =>
+        workoutGroup.MapPut("/workouts/{workoutId}", [Authorize] async (int trProgramId, int workoutId, UpdateWorkoutDto dto, ForumDbContext dbContext, HttpContext httpContext, CancellationToken cancellationToken) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
-            if (trainer == null)
+            var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
+            if (trProgram == null)
             {
-                return Results.NotFound("No trainer found by this ID");
+                return Results.NotFound("No training program found by this ID");
             }
             var workout = await dbContext.Workouts
-                .Where(w => w.Id == workoutId && w.TrainerId == trainerId)
+                .Where(w => w.Id == workoutId && w.TrProgramId == trProgramId)
                 .FirstOrDefaultAsync(cancellationToken);
             if (workout == null)
             {
                 return Results.NotFound("No workout found by this ID");
             }
-            workout.TypeTr = dto.TypeTr;
-            workout.Place = dto.Place;
-            workout.Price = dto.Price;
-
+            
             if (!httpContext.User.IsInRole(ForumRoles.Admin) &&
                 httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != workout.UserId)
             {
                 //NotFound()
                 return Results.Forbid();
             }
+            
+            workout.TypeTr = dto.TypeTr;
+            workout.Place = dto.Place;
+            workout.Price = dto.Price;
     
             dbContext.Workouts.Update(workout);
             await dbContext.SaveChangesAsync();
@@ -261,15 +272,15 @@ public static class EndPoints
                 
         });
         
-        workoutGroup.MapDelete("/workouts/{workoutId}", [Authorize] async (int trainerId, int workoutId, ForumDbContext dbContext, HttpContext httpContext, CancellationToken cancellationToken) =>
+        workoutGroup.MapDelete("/workouts/{workoutId}", [Authorize] async (int trProgramId, int workoutId, ForumDbContext dbContext, HttpContext httpContext, CancellationToken cancellationToken) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(new object[] { trainerId }, cancellationToken);
-            if (trainer == null)
+            var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
+            if (trProgram == null)
             {
-                return Results.NotFound("No trainer found by this ID");
+                return Results.NotFound("No training program found by this ID");
             }
             var workout = await dbContext.Workouts
-                .Where(w => w.Id == workoutId && w.TrainerId == trainerId)
+                .Where(w => w.Id == workoutId && w.TrProgramId == trProgramId)
                 .FirstOrDefaultAsync(cancellationToken);
             if (workout == null)
             {
@@ -290,79 +301,83 @@ public static class EndPoints
         });
     }
 
-    //TRAINER API
-    public static void AddTrainerApi(this WebApplication app)
+    //TRAINING PROGRAM API
+    public static void AddTrProgramApi(this WebApplication app)
     {
-        var trainersGroup = app.MapGroup("/api").AddFluentValidationAutoValidation();
+        var trProgramsGroup = app.MapGroup("/api").AddFluentValidationAutoValidation();
 
-        trainersGroup.MapGet("/trainers", async (ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        trProgramsGroup.MapGet("/trPrograms", [Authorize] async (ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
-            return (await dbContext.Trainers.ToListAsync(cancellationToken)).Select(trainer => trainer.ToDto());
+            return (await dbContext.TrPrograms.ToListAsync(cancellationToken)).Select(trProgram => trProgram.ToDto());
         });
         
-        trainersGroup.MapPost("/trainers", [Authorize(Roles = ForumRoles.ForumUser)] async (CreateTrainerDto createTrainerDto, HttpContext httpContext, ForumDbContext dbContext) =>
+        trProgramsGroup.MapPost("/trPrograms", [Authorize(Roles = ForumRoles.Trainer)] async (CreateTrProgramDto createTrProgramDto, HttpContext httpContext, ForumDbContext dbContext) =>
         {
-            var trainer = new Trainer()
+            var trProgram = new TrProgram()
             {
-                Name = createTrainerDto.Name,
-                Experience = createTrainerDto.Experience,
-                TypeTr = createTrainerDto.TypeTr,
+                Name = createTrProgramDto.Name,
+                Descr = createTrProgramDto.Descr,
+                Difficulty = createTrProgramDto.Difficulty,
+                Trainer = httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub),
+                Duration = createTrProgramDto.Duration,
                 UserId = httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub)
             };
     
-            dbContext.Trainers.Add(trainer);
+            dbContext.TrPrograms.Add(trProgram);
     
             await dbContext.SaveChangesAsync();
     
-            return TypedResults.Created($"/api/trainers/{trainer.Id}", trainer.ToDto());
-        }).WithName("CreateTrainer");
+            return TypedResults.Created($"/api/trPrograms/{trProgram.Id}", trProgram.ToDto());
+        }).WithName("CreateTrainingProgram");
 
-        trainersGroup.MapGet("/trainers/{trainerId}", async (int trainerId, ForumDbContext dbContext) =>
+        trProgramsGroup.MapGet("/trPrograms/{trProgramId}", [Authorize] async (int trProgramId, ForumDbContext dbContext) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(trainerId);
-            return trainer == null ? Results.NotFound("No trainer found by this ID") : TypedResults.Ok(trainer.ToDto());
+            var trProgram = await dbContext.TrPrograms.FindAsync(trProgramId);
+            return trProgram == null ? Results.NotFound("No training program found by this ID") : TypedResults.Ok(trProgram.ToDto());
         });
         
-        trainersGroup.MapPut("/trainers/{trainerId}", [Authorize] async (UpdateTrainerDto dto, int trainerId, HttpContext httpContext, ForumDbContext dbContext) =>
+        trProgramsGroup.MapPut("/trPrograms/{trProgramId}", [Authorize] async (UpdateTrProgramDto dto, int trProgramId, HttpContext httpContext, ForumDbContext dbContext) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(trainerId);
-            if (trainer == null)
+            var trProgram = await dbContext.TrPrograms.FindAsync(trProgramId);
+            if (trProgram == null)
             {
-                return Results.NotFound("No trainer found by this ID");
+                return Results.NotFound("No training program found by this ID");
             }
             
             if (!httpContext.User.IsInRole(ForumRoles.Admin) &&
-                httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != trainer.UserId)
+                httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != trProgram.UserId)
             {
                 //NotFound()
                 return Results.Forbid();
             }
     
-            trainer.Experience = dto.Experience;
-            trainer.TypeTr = dto.TypeTr;
+            trProgram.Name = dto.Name;
+            trProgram.Descr = dto.Descr;
+            trProgram.Difficulty = dto.Difficulty;
+            trProgram.Duration = dto.Duration;
             
-            dbContext.Trainers.Update(trainer);
+            dbContext.TrPrograms.Update(trProgram);
             await dbContext.SaveChangesAsync();
     
-            return Results.Ok(trainer.ToDto());
-        });
+            return Results.Ok(trProgram.ToDto());
+        }).WithName("UpdateTrainingProgram");
 
-        trainersGroup.MapDelete("/trainers/{trainerId}", [Authorize] async (int trainerId, HttpContext httpContext, ForumDbContext dbContext) =>
+        trProgramsGroup.MapDelete("/trPrograms/{trProgramId}", [Authorize] async (int trProgramId, HttpContext httpContext, ForumDbContext dbContext) =>
         {
-            var trainer = await dbContext.Trainers.FindAsync(trainerId);
-            if (trainer == null)
+            var trProgram = await dbContext.TrPrograms.FindAsync(trProgramId);
+            if (trProgram == null)
             {
-                return Results.NotFound("No trainer found by this ID");
+                return Results.NotFound("No training program found by this ID");
             }
             
             if (!httpContext.User.IsInRole(ForumRoles.Admin) &&
-                httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != trainer.UserId)
+                httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != trProgram.UserId)
             {
                 //NotFound()
                 return Results.Forbid();
             }
             
-            dbContext.Trainers.Remove(trainer);
+            dbContext.TrPrograms.Remove(trProgram);
             await dbContext.SaveChangesAsync();
     
             return Results.NoContent();

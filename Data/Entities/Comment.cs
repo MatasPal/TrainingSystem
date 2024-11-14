@@ -9,8 +9,8 @@ public class Comment
     public required string Text { get; set; }
     public int WorkoutId { get; set; }
     public Workout Workout { get; set; }
-    public int TrainerId { get; set; }
-    public Trainer Trainer { get; set; }
+    public int TrProgramId { get; set; }
+    public TrProgram TrProgram { get; set; }
     
     [Required]
     public required string UserId { get; set; }

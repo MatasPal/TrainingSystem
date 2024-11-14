@@ -15,7 +15,7 @@ public static class EndPoints
     public static void AddCommentApi(this WebApplication app)
     {
         var commentGroup = app.MapGroup("/api/trPrograms/{trProgramId}/workouts/{workoutId}").AddFluentValidationAutoValidation();
-        commentGroup.MapGet("/comments", async (int trProgramId, int workoutId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        commentGroup.MapGet("/comments", [Authorize] async (int trProgramId, int workoutId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
             if (trProgram == null)
@@ -36,7 +36,7 @@ public static class EndPoints
             return Results.Ok(comment.Select(comment => comment.ToDto()));
         });
 
-        commentGroup.MapPost("/comments", [Authorize(Roles = ForumRoles.Athlete)] async (int trProgramId, int workoutId, CreateCommentDto CreateCommentDto, HttpContext httpContext, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        commentGroup.MapPost("/comments", [Authorize] async (int trProgramId, int workoutId, CreateCommentDto CreateCommentDto, HttpContext httpContext, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
             if (trProgram == null)
@@ -66,7 +66,7 @@ public static class EndPoints
                 
         }).WithName("CreateComment");
         
-        commentGroup.MapGet("/comments/{commentId}", async (int trProgramId, int workoutId, int commentId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        commentGroup.MapGet("/comments/{commentId}", [Authorize] async (int trProgramId, int workoutId, int commentId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
             if (trProgram == null)
@@ -174,7 +174,7 @@ public static class EndPoints
     {
         var workoutGroup = app.MapGroup("/api/trPrograms/{trProgramId}").AddFluentValidationAutoValidation();
         
-        workoutGroup.MapGet("/workouts", async (int trProgramId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        workoutGroup.MapGet("/workouts", [Authorize] async (int trProgramId, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
             if (trProgram == null)
@@ -188,13 +188,21 @@ public static class EndPoints
             return Results.Ok(workout.Select(workout => workout.ToDto()));
         });
 
-        workoutGroup.MapPost("/workouts", [Authorize(Roles = ForumRoles.Trainer)] async (int trProgramId, CreateWorkoutDto createWorkoutDto, HttpContext httpContext, ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        workoutGroup.MapPost("/workouts", [Authorize] async (int trProgramId, CreateWorkoutDto createWorkoutDto, HttpContext httpContext, ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
             if (trProgram == null)
             {
                 return Results.NotFound("No training program found by this ID");
             }
+            
+            if (httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != trProgram.Trainer 
+                && !httpContext.User.IsInRole(ForumRoles.Admin))
+            {
+                //NotFound()
+                return Results.Forbid();
+            }
+            
             var workout = new Workout()
             {
                 TypeTr = createWorkoutDto.TypeTr,
@@ -204,12 +212,7 @@ public static class EndPoints
                 UserId = httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub)
             };
             
-            if (!httpContext.User.IsInRole(ForumRoles.Admin) &&
-                httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != workout.UserId)
-            {
-                //NotFound()
-                return Results.Forbid();
-            }
+            
     
             dbContext.Workouts.Add(workout);
     
@@ -219,7 +222,7 @@ public static class EndPoints
 
         }).WithName("CreateWorkout");
         
-        workoutGroup.MapGet("/workouts/{workoutId}", async (int trProgramId, int workoutId,  ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        workoutGroup.MapGet("/workouts/{workoutId}", [Authorize] async (int trProgramId, int workoutId,  ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             var trProgram = await dbContext.TrPrograms.FindAsync(new object[] { trProgramId }, cancellationToken);
             if (trProgram == null)
@@ -250,16 +253,17 @@ public static class EndPoints
             {
                 return Results.NotFound("No workout found by this ID");
             }
-            workout.TypeTr = dto.TypeTr;
-            workout.Place = dto.Place;
-            workout.Price = dto.Price;
-
+            
             if (!httpContext.User.IsInRole(ForumRoles.Admin) &&
                 httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) != workout.UserId)
             {
                 //NotFound()
                 return Results.Forbid();
             }
+            
+            workout.TypeTr = dto.TypeTr;
+            workout.Place = dto.Place;
+            workout.Price = dto.Price;
     
             dbContext.Workouts.Update(workout);
             await dbContext.SaveChangesAsync();
@@ -302,7 +306,7 @@ public static class EndPoints
     {
         var trProgramsGroup = app.MapGroup("/api").AddFluentValidationAutoValidation();
 
-        trProgramsGroup.MapGet("/trPrograms", async (ForumDbContext dbContext, CancellationToken cancellationToken) =>
+        trProgramsGroup.MapGet("/trPrograms", [Authorize] async (ForumDbContext dbContext, CancellationToken cancellationToken) =>
         {
             return (await dbContext.TrPrograms.ToListAsync(cancellationToken)).Select(trProgram => trProgram.ToDto());
         });
@@ -326,7 +330,7 @@ public static class EndPoints
             return TypedResults.Created($"/api/trPrograms/{trProgram.Id}", trProgram.ToDto());
         }).WithName("CreateTrainingProgram");
 
-        trProgramsGroup.MapGet("/trPrograms/{trProgramId}", async (int trProgramId, ForumDbContext dbContext) =>
+        trProgramsGroup.MapGet("/trPrograms/{trProgramId}", [Authorize] async (int trProgramId, ForumDbContext dbContext) =>
         {
             var trProgram = await dbContext.TrPrograms.FindAsync(trProgramId);
             return trProgram == null ? Results.NotFound("No training program found by this ID") : TypedResults.Ok(trProgram.ToDto());

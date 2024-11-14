@@ -11,7 +11,7 @@ public static class AuthEndpoints
 {
     public static void AddAuthApi(this WebApplication app)
     {
-        //register
+        //register Trainer
         app.MapPost("api/accounts", async (UserManager<ForumUser> userManager, [FromBody] RegisterUserDto dto, ForumDbContext _dbContext) =>
         {
             //check user exists
@@ -30,6 +30,53 @@ public static class AuthEndpoints
             if(!createUserResult.Succeeded)
                 return Results.UnprocessableEntity();
             
+            await userManager.AddToRoleAsync(newUser, ForumRoles.ForumUser);
+
+            return Results.Created();*/
+            // ----
+            // Transaction
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
+            var createUserResult = await userManager.CreateAsync(newUser, dto.Password);
+            if (!createUserResult.Succeeded)
+            {
+                var errors = createUserResult.Errors.Select(e => e.Description).ToList();
+                return Results.UnprocessableEntity(new { Errors = errors });
+            }
+
+            var roleResult = await userManager.AddToRoleAsync(newUser, ForumRoles.Trainer);
+            if (!roleResult.Succeeded)
+            {
+                await transaction.RollbackAsync(); // Rollback in case role assignment fails
+                var errors = roleResult.Errors.Select(e => e.Description).ToList();
+                return Results.UnprocessableEntity(new { Errors = errors });
+            }
+
+            await transaction.CommitAsync();
+            // ----
+
+            return Results.Created("api/login", new UserDto(newUser.Id, newUser.UserName, newUser.Email));
+        });
+        
+        //register Athlete
+        app.MapPost("api/accountsAthlete", async (UserManager<ForumUser> userManager, [FromBody] RegisterUserDto dto, ForumDbContext _dbContext) =>
+        {
+            //check user exists
+            var user = await userManager.FindByNameAsync(dto.UserName);
+            if (user != null) 
+                return Results.UnprocessableEntity("Username already taken");
+
+            var newUser = new ForumUser()
+            {
+                Email = dto.Email,
+                UserName = dto.UserName,
+            };
+            
+            // TODO: wrap in transaction 
+            /*var createUserResult = await userManager.CreateAsync(newUser, dto.Password);
+            if(!createUserResult.Succeeded)
+                return Results.UnprocessableEntity();
+
             await userManager.AddToRoleAsync(newUser, ForumRoles.ForumUser);
 
             return Results.Created();*/

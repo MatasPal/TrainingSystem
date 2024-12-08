@@ -19,6 +19,15 @@ using TrainingSystem.Auth.Model;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ForumDbContext>();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
@@ -53,6 +62,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+app.UseCors();
 
 using var scope = app.Services.CreateScope();
 
